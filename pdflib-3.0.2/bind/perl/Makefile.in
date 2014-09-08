@@ -1,0 +1,75 @@
+# Makefile for PDFlib's Perl binding
+
+VERSION		= @VERSION@
+PDFLIB_CURRENT	= @PDFLIB_CURRENT@
+PDFLIB_REVISION	= @PDFLIB_REVISION@
+PDFLIB_AGE	= @PDFLIB_AGE@
+LIBPDF		= lib@PDFLIBNAME@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA 	= @INSTALL_DATA@
+srcdir		= @srcdir@
+top_builddir	= ../../
+VPATH		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CC		= @CC@
+RM      	= @RM@
+LIBTOOL		= ../../libtool
+
+PDFLIBLINK	= @PDFLIBLINK@ @PERLLINK@
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+.c.$(OBJ):
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+LANG_LIBDIR 	= @PERLLIBDIR@
+PERLMODDIR	= @PERLMODDIR@
+PERLBIN		= @PERL@
+
+SWIG		= swig1.2 -I../../pdflib -perl5 -shadow -stat
+SWIG_LIB	= pdflib_pl.la
+SWIG_OBJ	= pdflib_pl.lo
+
+DEFINES		= @PERLBOOLDEF@ -I../../pdflib @PERLINCLUDE@ @DEFINES@ 
+
+all:	$(SWIG_LIB)
+
+.PHONY: clean
+
+# The swig-generated wrapper file
+swig: ../../pdflib/pdflib.i ../../pdflib/pdflib.h
+	$(SWIG) -o $@.XXX ../../pdflib/pdflib.i
+	@echo "Wrapper templates generated!"
+
+# The actual shared library for the language support
+$(SWIG_LIB): $(SWIG_OBJ) ../../pdflib/$(LIBPDF).la ../../pdflib/pdflib.h
+	$(RM) $(SWIG_LIB)
+	$(LIBTOOL) --mode=link 			\
+	    $(CC) -o $@ $(SWIG_OBJ)		\
+	    -rpath $(LANG_LIBDIR)		\
+	    -no-undefined			\
+	    -module				\
+	    -version-info $(PDFLIB_CURRENT):$(PDFLIB_REVISION):$(PDFLIB_AGE) \
+	    $(PDFLIBLINK)
+
+test: all
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) $(PERLBIN) hello.pl
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) $(PERLBIN) image.pl
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) $(PERLBIN) pdfclock.pl
+
+install: $(SWIG_LIB)
+	$(LIBTOOL) --mode=install \
+		$(INSTALL_DATA) $(SWIG_LIB) $(LANG_LIBDIR)
+	$(INSTALL_DATA) pdflib_pl.pm $(LANG_LIBDIR)
+
+uninstall:
+	$(LIBTOOL) --mode=uninstall \
+		$(RM) $(LANG_LIBDIR)/$(SWIG_LIB) $(LANG_LIBDIR)/pdflib_pl.pm 
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la .libs hello_pl.pdf pdfclock_pl.pdf image_pl.pdf

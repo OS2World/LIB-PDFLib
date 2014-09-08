@@ -1,0 +1,28 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+USEUNIT("p_afm.c");
+USEUNIT("p_annots.c");
+USEUNIT("p_basic.c");
+USEUNIT("p_ccitt.c");
+USEUNIT("p_color.c");
+USEUNIT("p_draw.c");
+USEUNIT("p_filter.c");
+USEUNIT("p_font.c");
+USEUNIT("p_gif.c");
+USEUNIT("p_gstate.c");
+USEUNIT("p_hyper.c");
+USEUNIT("p_image.c");
+USEUNIT("p_jpeg.c");
+USEUNIT("p_pfm.c");
+USEUNIT("p_png.c");
+USEUNIT("p_stream.c");
+USEUNIT("p_text.c");
+USEUNIT("p_tiff.c");
+USEUNIT("p_util.c");
+//---------------------------------------------------------------------------
+#define Library
+
+// Um eine Datei zur Bibliothek hinzuzufügen, wählen Sie im Projektmenü 'Zum Projekt hinzufügen'.
+

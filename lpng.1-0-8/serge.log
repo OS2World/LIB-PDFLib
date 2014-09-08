@@ -1,0 +1,198 @@
+
+Operating System/2 Executable File Header Utility
+Version 4.00.004 May 12 1999
+Copyright (C) IBM Corporation 1988-1999
+Copyright (C) Microsoft Corp. 1988-1992.
+All rights reserved.
+
+Library:                        LPNG108
+
+Module type:                    Dynamic link library
+                                Global initialization
+                                Global termination
+Number of memory pages:         0000002d (45)
+Initial CS:EIP:                 object 2 offset 00022480
+Initial SS:ESP:                 object 0 offset 00000000
+Automatic data object:          4
+
+ no. virtual  virtual  map      map      flags
+     address   size    index    size
+0001 00010000 00000030 00000001 00000001 EXECUTABLE, READABLE, 32-bit
+0002 00020000 00026d7a 00000002 00000027 EXECUTABLE, READABLE, 32-bit
+0003 00050000 00003344 00000029 00000004 READABLE, SHARED, 32-bit
+0004 00060000 00000ac8 0000002d 00000001 READABLE, WRITEABLE, 32-bit
+
+
+Exports:
+ ord  obj   offset    name
+   1    2  0000db99  png_start_read_image	exported, shared data
+   2    2  00001fb9  png_set_unknown_chunk_location	exported, shared data
+   3    2  000126d2  png_set_read_user_transform_fn	exported, shared data
+   4    2  0001251a  png_set_rgb_to_gray	exported, shared data
+   5    2  00008859  png_write_chunk_start	exported, shared data
+   6    2  00007ee5  png_set_invert_mono	exported, shared data
+   7    2  00007ec3  png_set_invert_alpha	exported, shared data
+   8    2  000124d6  png_set_tRNS_to_alpha	exported, shared data
+   9    2  00001ffd  png_permit_empty_plte	exported, shared data
+  10    2  0001a9f7  png_warning	exported, shared data
+  11    2  0000004d  png_sig_cmp	exported, shared data
+  12    2  0000cf60  png_create_read_struct	exported, shared data
+  13    2  0000e4d3  png_read_end	exported, shared data
+  14    2  00000aa9  png_init_io	exported, shared data
+  15    2  00002c6c  png_get_pCAL	exported, shared data
+  16    2  000029db  png_get_iCCP	exported, shared data
+  17    2  00002d4d  png_get_sCAL	exported, shared data
+  18    2  00002455  png_get_interlace_type	exported, shared data
+  19    2  0000f01b  png_read_png	exported, shared data
+  20    2  000012b4  png_set_pCAL	exported, shared data
+  21    2  00001793  png_set_iCCP	exported, shared data
+  22    2  00001496  png_set_sCAL	exported, shared data
+  23    2  00000bc7  png_get_header_version	exported, shared data
+  24    2  00002ad0  png_get_IHDR	exported, shared data
+  25    2  00007cd0  png_set_bgr	exported, shared data
+  26    2  0000271c  png_get_bKGD	exported, shared data
+  27    2  00012492  png_set_palette_to_rgb	exported, shared data
+  28    2  0000dbbb  png_read_row	exported, shared data
+  29    2  00002c09  png_get_oFFs	exported, shared data
+  30    2  00002917  png_get_gAMA	exported, shared data
+  31    2  00001142  png_set_IHDR	exported, shared data
+  32    2  00000cb0  png_set_bKGD	exported, shared data
+  33    2  0000f004  png_set_read_status_fn	exported, shared data
+  34    2  00002e8c  png_get_sBIT	exported, shared data
+  35    2  0000125d  png_set_oFFs	exported, shared data
+  36    2  00001046  png_set_gAMA	exported, shared data
+  37    2  00003073  png_get_user_chunk_ptr	exported, shared data
+  38    2  0000302b  png_get_unknown_chunks	exported, shared data
+  39    2  00000270  png_create_info_struct	exported, shared data
+  40    2  000015ac  png_set_sBIT	exported, shared data
+  41    2  0000299a  png_get_sRGB	exported, shared data
+  42    2  00001e30  png_set_unknown_chunks	exported, shared data
+  43    2  00007cf0  png_set_swap	exported, shared data
+  44    2  00002f2d  png_get_tIME	exported, shared data
+  45    2  00001600  png_set_sRGB	exported, shared data
+  46    2  0000275c  png_get_cHRM	exported, shared data
+  47    2  000003ad  png_free_data	exported, shared data
+  48    2  00001b93  png_set_tIME	exported, shared data
+  49    2  00003084  png_get_compression_buffer_size	exported, shared data
+  50    2  00002a59  png_get_sPLT	exported, shared data
+  51    2  00000d00  png_set_cHRM	exported, shared data
+  52    2  00002a90  png_get_hIST	exported, shared data
+  53    2  00002280  png_set_compression_buffer_size	exported, shared data
+  54    2  00001c70  png_set_sPLT	exported, shared data
+  55    2  00002f6d  png_get_tRNS	exported, shared data
+  56    2  00002e40  png_get_PLTE	exported, shared data
+  57    2  00001104  png_set_hIST	exported, shared data
+  58    2  00001bf3  png_set_tRNS	exported, shared data
+  59    2  00001564  png_set_PLTE	exported, shared data
+  60    2  00002ecc  png_get_text	exported, shared data
+  61    2  0000d3c5  png_read_info	exported, shared data
+  62    2  00002db9  png_get_pHYs	exported, shared data
+  63    2  0000d1c3  png_read_init	exported, shared data
+  64    2  0000189d  png_set_text	exported, shared data
+  65    2  00002380  png_get_rows	exported, shared data
+  66    2  00001510  png_set_pHYs	exported, shared data
+  67    2  000021fb  png_set_rows	exported, shared data
+  68    2  000124b4  png_set_gray_1_2_4_to_8	exported, shared data
+  69    2  0000e300  png_read_rows	exported, shared data
+  70    2  00012410  png_set_gamma	exported, shared data
+  71    2  00002330  png_get_valid	exported, shared data
+  72    2  000000e8  png_check_sig	exported, shared data
+  73    2  0000fc6b  png_write_end	exported, shared data
+  74    2  00007d80  png_set_shift	exported, shared data
+  75    2  00011260  png_set_compression_window_bits	exported, shared data
+  76    2  00011343  png_set_write_user_transform_fn	exported, shared data
+  77    2  00011371  png_write_png	exported, shared data
+  78    2  000106ba  png_set_flush	exported, shared data
+  79    2  000103a0  png_write_row	exported, shared data
+  80    2  0000e430  png_read_image	exported, shared data
+  81    2  00007df9  png_set_filler	exported, shared data
+  82    2  00000330  png_data_freer	exported, shared data
+  83    2  00010af0  png_set_filter	exported, shared data
+  84    2  0000f7b5  png_write_info	exported, shared data
+  85    2  0001014c  png_write_init	exported, shared data
+  86    2  00012470  png_set_expand	exported, shared data
+  87    2  000117aa  png_set_dither	exported, shared data
+  88    2  000102ba  png_write_rows	exported, shared data
+  89    2  00002657  png_get_x_offset_pixels	exported, shared data
+  90    2  00002697  png_get_y_offset_pixels	exported, shared data
+  91    2  0001d45c  png_get_progressive_ptr	exported, shared data
+  92    2  00000a9b  png_get_io_ptr	exported, shared data
+  93    2  0000eb35  png_destroy_read_struct	exported, shared data
+  94    2  000025da  png_get_x_offset_microns	exported, shared data
+  95    2  00002617  png_get_y_offset_microns	exported, shared data
+  96    2  000002b6  png_destroy_info_struct	exported, shared data
+  97    2  0000ff43  png_convert_from_time_t	exported, shared data
+  98    2  0000ff78  png_create_write_struct	exported, shared data
+  99    2  00002476  png_get_compression_type	exported, shared data
+ 100    2  0001132c  png_set_write_status_fn	exported, shared data
+ 101    2  0000d1e8  png_read_init_2	exported, shared data
+ 102    2  0001083d  png_destroy_write_struct	exported, shared data
+ 103    2  000111d1  png_set_compression_level	exported, shared data
+ 104    2  00002517  png_get_pixels_per_meter	exported, shared data
+ 105    2  00000ca3  png_access_version_number	exported, shared data
+ 106    2  00010db7  png_set_filter_heuristics	exported, shared data
+ 107    2  0001259d  png_set_rgb_to_gray_fixed	exported, shared data
+ 108    2  00011766  png_set_strip_16	exported, shared data
+ 109    2  00001642  png_set_sRGB_gAMA_and_cHRM	exported, shared data
+ 110    2  00007d1b  png_set_packing	exported, shared data
+ 111    2  00007dc0  png_set_interlace_handling	exported, shared data
+ 112    2  00002567  png_get_pixel_aspect_ratio	exported, shared data
+ 113    2  00010310  png_write_image	exported, shared data
+ 114    2  0000f347  png_set_read_fn	exported, shared data
+ 115    2  000026d7  png_get_channels	exported, shared data
+ 116    2  00008810  png_write_chunk	exported, shared data
+ 117    2  000021d5  png_set_read_user_chunk_fn	exported, shared data
+ 118    2  00007d50  png_set_packswap	exported, shared data
+ 119    2  000106eb  png_write_flush	exported, shared data
+ 120    2  000022f4  png_set_invalid	exported, shared data
+ 121    2  000112e2  png_set_compression_method	exported, shared data
+ 122    2  00002497  png_get_x_pixels_per_meter	exported, shared data
+ 123    2  000024d7  png_get_y_pixels_per_meter	exported, shared data
+ 124    2  0001ab60  png_chunk_error	exported, shared data
+ 125    2  0001a970  png_memset_check	exported, shared data
+ 126    2  00003062  png_get_rgb_to_gray_status	exported, shared data
+ 127    2  0001a923  png_memcpy_check	exported, shared data
+ 128    2  0000f550  png_write_info_before_PLTE	exported, shared data
+ 129    2  0000f4ba  png_set_write_fn	exported, shared data
+ 130    2  0001ac40  png_process_data	exported, shared data
+ 131    2  00008766  png_get_user_transform_ptr	exported, shared data
+ 132    2  0000235a  png_get_rowbytes	exported, shared data
+ 133    2  0001abfb  png_set_error_fn	exported, shared data
+ 134    2  0000feea  png_convert_from_struct_tm	exported, shared data
+ 135    2  00010171  png_write_init_2	exported, shared data
+ 136    2  00000b71  png_get_copyright	exported, shared data
+ 137    2  000026f8  png_get_signature	exported, shared data
+ 138    2  000023f0  png_get_bit_depth	exported, shared data
+ 139    2  00000000  png_set_sig_bytes	exported, shared data
+ 140    2  0001ab98  png_chunk_warning	exported, shared data
+ 141    2  00000c87  png_reset_zstream	exported, shared data
+ 142    2  0001ac24  png_get_error_ptr	exported, shared data
+ 143    2  00002957  png_get_gAMA_fixed	exported, shared data
+ 144    2  00011659  png_set_background	exported, shared data
+ 145    2  000010b4  png_set_gAMA_fixed	exported, shared data
+ 146    2  00007ea1  png_set_swap_alpha	exported, shared data
+ 147    2  000162fb  png_build_grayscale_palette	exported, shared data
+ 148    2  00002837  png_get_cHRM_fixed	exported, shared data
+ 149    2  000114b0  png_set_crc_action	exported, shared data
+ 150    2  00000f20  png_set_cHRM_fixed	exported, shared data
+ 151    2  00000bab  png_get_header_ver	exported, shared data
+ 152    2  0001d411  png_set_progressive_read_fn	exported, shared data
+ 153    2  00000b91  png_get_libpng_ver	exported, shared data
+ 154    2  0001a8f8  png_free		exported, shared data
+ 155    2  0001d3d8  png_progressive_combine_row	exported, shared data
+ 156    2  00002411  png_get_color_type	exported, shared data
+ 157    2  00002020  png_set_keep_unknown_chunks	exported, shared data
+ 158    2  00011230  png_set_compression_strategy	exported, shared data
+ 159    2  0000873d  png_set_user_transform_info	exported, shared data
+ 160    2  0001a9c0  png_error		exported, shared data
+ 161    2  00011200  png_set_compression_mem_level	exported, shared data
+ 162    2  0001a8a3  png_malloc	exported, shared data
+ 163    2  00008917  png_write_chunk_end	exported, shared data
+ 164    2  0000db63  png_read_update_info	exported, shared data
+ 165    2  000023ca  png_get_image_height	exported, shared data
+ 166    2  000124f8  png_set_gray_to_rgb	exported, shared data
+ 167    2  00011788  png_set_strip_alpha	exported, shared data
+ 168    2  000023a7  png_get_image_width	exported, shared data
+ 169    2  00000abd  png_convert_to_rfc1123	exported, shared data
+ 170    2  000088d0  png_write_chunk_data	exported, shared data
+ 171    2  00002434  png_get_filter_type	exported, shared data

@@ -1,0 +1,57 @@
+# Makefile for PDFlib tests
+
+VERSION = @VERSION@
+LIBPDF	= lib@PDFLIBNAME@
+
+SHELL = @SHELL@
+
+srcdir	= @srcdir@
+top_builddir= ../
+
+VPATH	= @srcdir@
+
+LIBS    = @PDFLIBLINK@
+
+EXE	= @EXEEXT@
+OBJ	= @OBJEXT@
+CC	= @CC@
+RM      = @RM@
+LIBTOOL	= ../libtool
+GDB	= gdb
+
+DEFINES	= @DEFS@ @DEFINES@ -I../pdflib
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+.c.$(OBJ):
+	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+# ------------------------------
+
+SRC	= \
+	$(srcdir)/pdftest.c
+
+OBJS	= \
+	$(srcdir)/pdftest.lo
+
+all:	pdftest$(EXE)
+
+test: pdftest$(EXE) 
+	$(LIBTOOL) --mode=execute -dlopen ../pdflib/$(LIBPDF).la ./pdftest
+
+.PHONY: clean
+
+pdftest.lo: pdftest.c ../pdflib/pdflib.h
+
+pdftest$(EXE): $(OBJS) ../pdflib/$(LIBPDF).la
+	$(LIBTOOL) --mode=link $(CC) -o $@ $(OBJS) $(LIBS)
+
+debug: pdftest$(EXE) 
+	$(LIBTOOL) --mode=execute -dlopen ../pdflib/$(LIBPDF).la $(GDB) ./pdftest
+
+clean:
+	-$(RM) pdftest$(EXE) pdftest*.pdf *.$(OBJ) *.lo *.la .libs
+

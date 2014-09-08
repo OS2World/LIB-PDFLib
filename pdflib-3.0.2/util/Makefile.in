@@ -1,0 +1,75 @@
+# Makefile for PDFlib utilities
+# Before running this Makefile, a "make install" must have been
+# run to install the PDFlib library.
+
+VERSION		= @VERSION@
+LIBPDF		= lib@PDFLIBNAME@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA	= @INSTALL_DATA@
+LIBPDF		= lib@PDFLIBNAME@
+
+srcdir = @srcdir@
+top_builddir = ../
+
+VPATH = @srcdir@
+
+LIBS	= ../pdflib/$(LIBPDF).la @PDFLIBLINK@
+
+EXE	= @EXEEXT@
+OBJ	= @OBJEXT@
+CC	= @CC@
+RM      = @RM@
+
+LIBTOOL	= ../libtool
+
+# installation directories
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+# directories for the final library and include files for PDFlib users
+libdir = @libdir@
+includedir = @includedir@
+
+DEFINES = -c @DEFS@ @DEFINES@ -I../pdflib
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+.c.$(OBJ):
+	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+SRC	= \
+	compile_metrics.c
+
+OBJS	= \
+	compile_metrics.lo
+
+PROGS	= \
+	compile_metrics$(EXE)
+
+all:	$(PROGS)
+
+.PHONY: clean
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la $(PROGS) *.bak .libs
+
+distclean: clean
+	-$(RM) Makefile.in.bak
+
+all:	$(PROGS)
+
+compile_metrics$(EXE):	compile_metrics.lo ../pdflib/$(LIBPDF).la
+	$(LIBTOOL) --mode=link $(CC) -o $@ $(OBJS) $(LIBS)
+
+depend:
+	cp Makefile.in Makefile.in.bak
+	sed '/^# Automatically generated dependencies/q' Makefile.in.bak >Makefile.in
+	$(CC) $(DEFINES) -MM $(SRC) | sed 's/\.o:/.lo:/g' >>Makefile.in
+
+# Automatically generated dependencies
+compile_metrics.lo: compile_metrics.c ../pdflib/p_intern.h \
+ ../pdflib/pdflib.h ../pdflib/p_config.h ../pdflib/p_font.h

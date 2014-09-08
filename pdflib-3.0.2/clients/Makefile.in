@@ -1,0 +1,51 @@
+# Makefile for PDFlib clients
+
+VERSION		= @VERSION@
+LIBPDF		= lib@PDFLIBNAME@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA 	= @INSTALL_DATA@
+srcdir		= @srcdir@
+top_builddir	= ../
+VPATH		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CC		= @CC@
+RM      	= @RM@
+LIBTOOL		= ../libtool
+PDFLIBLINK	= @PDFLIBLINK@
+
+CFLAGS		= -I../pdflib @DEFINES@
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+
+.c.$(OBJ):
+	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+
+# ------------------------------
+
+SRC	= \
+	$(srcdir)/pdfimage.c	\
+	$(srcdir)/text2pdf.c
+
+OBJS	= \
+	$(srcdir)/pdfimage.$(OBJ)	\
+	$(srcdir)/text2pdf.$(OBJ)
+
+all:	 pdfimage$(EXE) text2pdf$(EXE)
+
+.PHONY: clean
+
+pdfimage$(EXE): pdfimage.lo ../pdflib/$(LIBPDF).la ../pdflib/pdflib.h
+	$(LIBTOOL) --mode=link $(CC) -o $@ pdfimage.lo $(PDFLIBLINK)
+
+text2pdf$(EXE): text2pdf.lo ../pdflib/$(LIBPDF).la ../pdflib/pdflib.h
+	$(LIBTOOL) --mode=link $(CC) -o $@ text2pdf.lo $(PDFLIBLINK)
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la pdfimage$(EXE) text2pdf$(EXE) *.bak .libs
+
+dummy:

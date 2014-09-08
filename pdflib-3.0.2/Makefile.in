@@ -1,0 +1,438 @@
+# Main PDFlib Makefile
+
+VERSION = @VERSION@
+
+SHELL = @SHELL@
+INSTALL = @INSTALL@
+
+VPATH = @srcdir@
+srcdir = @srcdir@
+
+CC	= @CC@
+RM      = @RM@
+
+# installation directories
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+# directories for the final library and include files for PDFlib users
+libdir = @libdir@
+includedir = @includedir@
+
+DIRNAME = pdflib-$(VERSION)
+TARFILE = pdflib-$(VERSION)-`LANG= date +%y-%m-%d`.tar
+ZIPFILE = pdflib-$(VERSION)-`LANG= date +%y-%m-%d`.zip
+BACKUPTARFILE = pdflib-$(VERSION)-`LANG= date +%y-%m-%d-%p`.tar
+BACKUPZIPFILE = pdflib-$(VERSION)-`LANG= date +%y-%m-%d-%p`.zip
+DIRNAMEDATE = $(DIRNAME)-`LANG= date +%y-%m-%d-%p`
+
+# ------------------------- default target  -------------------------------
+
+all:	pdflib @BINDINGS@
+
+pdflib::
+	cd pdflib && $(MAKE)
+
+clients: pdflib
+	-cd clients && $(MAKE)
+
+pdflib_c: pdflib
+	-cd bind/c && $(MAKE)
+
+pdflib_cpp: pdflib
+	-cd bind/cpp && $(MAKE)
+
+pdflib_java: pdflib
+	-cd bind/java && $(MAKE)
+
+pdflib_perl: pdflib
+	-cd bind/perl && $(MAKE)
+
+pdflib_python: pdflib
+	-cd bind/python && $(MAKE)
+
+pdflib_tcl: pdflib
+	-cd bind/tcl && $(MAKE)
+
+# --------------------------- test ---------------------------------
+
+test: pdflib pdflib_test @BINDINGS_TEST@
+
+pdflib_test:
+	-cd test; $(MAKE) test
+
+pdflib_c_test:
+	-cd bind/c && $(MAKE) test
+
+pdflib_cpp_test:
+	-cd bind/cpp && $(MAKE) test
+
+pdflib_java_test:
+	-cd bind/java && $(MAKE) test
+
+pdflib_perl_test:
+	-cd bind/perl && $(MAKE) test
+
+pdflib_python_test:
+	-cd bind/python && $(MAKE) test
+
+pdflib_tcl_test:
+	-cd bind/tcl && $(MAKE) test
+
+# --------------------------- install ---------------------------------
+
+install: pdflib_install @BINDINGS_INSTALL@
+
+pdflib_install:
+	-cd pdflib && $(MAKE) install
+
+# No install to be done for C and C++ bindings (this is done in the main PDFlib Makefile)
+
+pdflib_c_install:
+
+pdflib_cpp_install:
+
+pdflib_java_install:
+	-cd bind/java && $(MAKE) install
+
+pdflib_perl_install:
+	-cd bind/perl && $(MAKE) install
+
+pdflib_python_install:
+	-cd bind/python && $(MAKE) install
+
+pdflib_tcl_install:
+	-cd bind/tcl && $(MAKE) install
+
+# --------------------------- uninstall ---------------------------------
+
+uninstall: pdflib_uninstall @BINDINGS_UNINSTALL@
+
+pdflib_uninstall:
+	-cd pdflib && $(MAKE) uninstall
+
+pdflib_c_uninstall:
+	-cd bind/c && $(MAKE) uninstall
+
+pdflib_cpp_uninstall:
+	-cd bind/cpp && $(MAKE) uninstall
+
+pdflib_java_uninstall:
+	-cd bind/java && $(MAKE) uninstall
+
+pdflib_perl_uninstall:
+	-cd bind/perl && $(MAKE) uninstall
+
+pdflib_python_uninstall:
+	-cd bind/python && $(MAKE) uninstall
+
+pdflib_tcl_uninstall:
+	-cd bind/tcl && $(MAKE) uninstall
+
+# --------------------------- clean ---------------------------------
+
+clean: pdflib_clean @BINDINGS_CLEAN@
+
+pdflib_clean:
+	-cd pdflib && $(MAKE) clean
+	-cd test && $(MAKE) clean
+	-cd clients && $(MAKE) clean
+	-cd util && $(MAKE) clean
+
+pdflib_c_clean:
+	-cd bind/c && $(MAKE) clean
+
+pdflib_cpp_clean:
+	-cd bind/cpp && $(MAKE) clean
+
+pdflib_java_clean:
+	-cd bind/java && $(MAKE) clean
+
+pdflib_perl_clean:
+	-cd bind/perl && $(MAKE) clean
+
+pdflib_python_clean:
+	-cd bind/python && $(MAKE) clean
+
+pdflib_tcl_clean:
+	-cd bind/tcl && $(MAKE) clean
+
+distclean: clean
+	-$(RM) libtool pdflib-config config.cache config.log config.status Makefile bind/c/Makefile bind/cpp/Makefile bind/java/Makefile bind/perl/Makefile bind/python/Makefile bind/tcl/Makefile test/Makefile pdflib/Makefile clients/Makefile util/Makefile
+
+# Distribution file listing ---------------------------------------------
+BUILDFILES = \
+	Makefile.in			\
+	configure.in			\
+	configure			\
+	pdflib-config.in		\
+	PDFlib.dsw			\
+	PDFlib.bpg			\
+	PDFlib.mcp			\
+
+PDFLIBFILES = \
+	pdflib/Makefile.in		\
+	pdflib/pdflib.dsp		\
+	pdflib/pdflib_dll.dsp		\
+	pdflib/PDFlib.bpf		\
+	pdflib/PDFlib.bpr		\
+	pdflib/PDFlib_dll.bpf		\
+	pdflib/PDFlib_dll.bpr		\
+	pdflib/PDFlib_dll.res		\
+	pdflib/p_afm.c			\
+	pdflib/p_annots.c		\
+	pdflib/p_basic.c		\
+	pdflib/p_ccitt.c		\
+	pdflib/p_color.c		\
+	pdflib/p_draw.c			\
+	pdflib/p_filter.c		\
+	pdflib/p_font.c			\
+	pdflib/p_gif.c			\
+	pdflib/p_gstate.c		\
+	pdflib/p_hyper.c		\
+	pdflib/p_image.c		\
+	pdflib/p_jpeg.c			\
+	pdflib/p_pfm.c			\
+	pdflib/p_png.c			\
+	pdflib/p_stream.c		\
+	pdflib/p_text.c			\
+	pdflib/p_tiff.c			\
+	pdflib/p_util.c			\
+	pdflib/e_ansi.h			\
+	pdflib/e_ebcdic.h		\
+	pdflib/e_macroman.h		\
+	pdflib/p_cid.h			\
+	pdflib/p_font.h			\
+	pdflib/p_intern.h		\
+	pdflib/p_metrics.h		\
+	pdflib/p_config.h		\
+	pdflib/resource.h		\
+	pdflib/pdflib.rc		\
+	pdflib/pdflib.h
+
+CLIENTFILES = \
+	clients/Makefile.in		\
+	clients/pdfimage.c		\
+	clients/text2pdf.c
+
+UTILFILES = \
+	util/Makefile.in		\
+	util/compile_metrics.c
+
+DOCFILES = \
+	readme.txt			\
+	doc/grid.pdf			\
+	doc/readme_unix.txt		\
+	doc/readme_win.txt		\
+	doc/readme_mac.txt		\
+	doc/readme_ebcdic.txt		\
+	doc/compatibility.txt		\
+	doc/changes.txt			\
+	doc/PDFlib-manual.pdf		\
+	doc/PDFlib-license.pdf		\
+	doc/PDFlib-purchase-order.pdf	\
+	doc/aladdin-license.pdf
+
+TESTFILES = \
+	test/Makefile.in		\
+	test/test.dsp			\
+	test/pdftest.bpf		\
+	test/pdftest.bpr		\
+	test/pdftest.c			\
+	test/nesrin.jpg			\
+	test/pdflib.gif			\
+	test/pdflib.png			\
+	test/acroweb_j.tif
+
+ACTIVEXFILES = \
+	bind/activex/asp/hello.js.asp	\
+	bind/activex/asp/hello.vbs.asp	\
+	bind/activex/asp/image.js.asp	\
+	bind/activex/asp/image.vbs.asp	\
+	bind/activex/asp/pdfclock.js.asp\
+	bind/activex/asp/pdfclock.vbs.asp\
+	bind/activex/vb/hello.bas	\
+	bind/activex/vb/hello.vbp	\
+	bind/activex/vb/image.bas	\
+	bind/activex/vb/image.vbp	\
+	bind/activex/vb/pdfclock.bas	\
+	bind/activex/vb/pdfclock.vbp	\
+	bind/activex/wsh/hello.vbs	\
+	bind/activex/wsh/image.vbs	\
+	bind/activex/wsh/pdfclock.vbs	\
+	bind/activex/delphi/hello.pas	\
+	bind/activex/delphi/hello.dfm	\
+	bind/activex/delphi/helloctl.dpr\
+	bind/activex/delphi/pdfclock.pas\
+	bind/activex/delphi/pdfclock.dfm\
+	bind/activex/delphi/pdfclockctl.dpr\
+	bind/activex/delphi/image.pas	\
+	bind/activex/delphi/image.dfm	\
+	bind/activex/delphi/imagectl.dpr\
+	bind/activex/ActiveX.dsp	\
+	bind/activex/pdflib.reg		\
+	bind/activex/PDF.cpp		\
+	bind/activex/PDF.h		\
+	bind/activex/PDF.rgs		\
+	bind/activex/readme.txt		\
+	bind/activex/StdAfx.cpp		\
+	bind/activex/StdAfx.h		\
+	bind/activex/dlldatax.c		\
+	bind/activex/dlldatax.h		\
+	bind/activex/pdflib_com.cpp	\
+	bind/activex/pdflib_com.def	\
+	bind/activex/pdflib_com.idl	\
+	bind/activex/pdflib_com.rc	\
+	bind/activex/resource.h
+
+OTHERFILES = \
+	version.sh			\
+	pdflib/pdflib.i
+
+BINDFILES = \
+	bind/c/readme.txt		\
+	bind/c/Makefile.in		\
+	bind/c/c.dsp			\
+	bind/c/hello.c			\
+	bind/c/image.c			\
+	bind/c/pdfclock.c		\
+	bind/cpp/readme.txt		\
+	bind/cpp/Makefile.in		\
+	bind/cpp/Cplusplus.dsp		\
+	bind/cpp/pdflib.cpp		\
+	bind/cpp/pdflib.hpp		\
+	bind/cpp/hello.cpp		\
+	bind/cpp/image.cpp		\
+	bind/cpp/pdfclock.cpp		\
+	bind/java/readme.txt		\
+	bind/java/Makefile.in		\
+	bind/java/Java.dsp		\
+	bind/java/pdflib_java.c		\
+	bind/java/pdflib.java		\
+	bind/java/hello.java		\
+	bind/java/PDFlibServlet.java	\
+	bind/java/image.java		\
+	bind/java/pdfclock.java		\
+	bind/perl/readme.txt		\
+	bind/perl/Makefile.in		\
+	bind/perl/Perl.dsp		\
+	bind/perl/pdflib_pl.c		\
+	bind/perl/pdflib_pl.pm		\
+	bind/perl/hello.pl		\
+	bind/perl/image.pl		\
+	bind/perl/pdfclock.pl		\
+	bind/perl/pdfclock.pl.cgi	\
+	bind/python/readme.txt		\
+	bind/python/Makefile.in		\
+	bind/python/Python.dsp		\
+	bind/python/pdflib_py.c		\
+	bind/python/hello.py		\
+	bind/python/image.py		\
+	bind/python/pdfclock.py		\
+	bind/tcl/readme.txt		\
+	bind/tcl/Makefile.in		\
+	bind/tcl/Tcl.dsp		\
+	bind/tcl/pdflib_tcl.c		\
+	bind/tcl/pkgIndex.tcl		\
+	bind/tcl/hello.tcl		\
+	bind/tcl/image.tcl		\
+	bind/tcl/pdfclock.tcl
+
+CONFIGFILES = \
+	config/pdflib.m4		\
+	config/aclocal.m4		\
+	config/config.guess		\
+	config/config.sub		\
+	config/ltconfig			\
+	config/ltmain.sh		\
+	config/install-sh
+
+FONTFILES = \
+	fonts/Courier.afm		\
+	fonts/Courier-Bold.afm		\
+	fonts/Courier-Oblique.afm	\
+	fonts/Courier-BoldOblique.afm	\
+	fonts/Helvetica.afm		\
+	fonts/Helvetica-Bold.afm	\
+	fonts/Helvetica-Oblique.afm	\
+	fonts/Helvetica-BoldOblique.afm	\
+	fonts/Symbol.afm		\
+	fonts/Times-Roman.afm		\
+	fonts/Times-Bold.afm		\
+	fonts/Times-Italic.afm		\
+	fonts/Times-BoldItalic.afm	\
+	fonts/ZapfDingbats.afm		\
+	fonts/iso8859-2.enc		\
+	fonts/iso8859-9.enc		\
+	fonts/iso8859-15.enc		\
+	fonts/pdflib.upr		\
+	fonts/print_glyphs.ps
+
+# End of distribution file listing -----------------------------------------
+
+DISTFILES =	\
+	$(PDFLIBFILES) $(CLIENTFILES) $(DOCFILES) $(TESTFILES) \
+	$(BINDFILES) $(FONTFILES) $(BUILDFILES) $(CONFIGFILES) $(UTILFILES)
+
+BACKUPFILES = $(DISTFILES) $(ACTIVEXFILES) $(OTHERFILES)
+
+# Text files will be subjected to line end conversion before creating a release
+
+TEXTSUFFIXES = /\.c$$/ || /\.h$$/ || /\.i$$/ || /\.cpp$$/ || /\.hpp$$/ || /\.java$$/ || /\.in$$/ || /\.rgs$$/ || /\.asp$$/ || /\.def$$/ || /\.idl$$/ || /\.rc$$/ || /\.bas$$/ || /\.afm$$/ || /\.txt$$/ || /\.dsw$$/ || /\.dsp$$/ || /\.upr$$/ || /\.tcl$$/ || /\.pl$$/ || /\.pm$$/ || /\.py$$/ || /\.enc$$/ || /\.ps$$/
+
+# We don't use a symbolic link to . because our simplistic lineend conversion
+# tool doesn't preserve file attributes.
+
+backup:
+	@echo Preparing Unix backup...
+	@$(RM) -r $(DIRNAMEDATE) $(BACKUPZIPFILE) $(BACKUPTARFILE).gz
+	@mkdir $(DIRNAMEDATE)
+	@tar cvfh  - $(BACKUPFILES) 2>/dev/null | (cd $(DIRNAMEDATE); tar xvf - >/dev/null)
+	@(for i in $(BACKUPFILES); do			\
+		echo $$i;				\
+	done) | sed "s;.*;$(DIRNAMEDATE)/&;" >distfiles
+	tar cvfh  $(BACKUPTARFILE) `cat distfiles` >/dev/null
+	gzip $(BACKUPTARFILE) >/dev/null
+	@awk '$(TEXTSUFFIXES) {print}' < distfiles >textfiles
+	@lineend -d `cat textfiles`
+	@echo Preparing Windows backup...
+	zip $(BACKUPZIPFILE) `cat distfiles` >/dev/null
+	@$(RM) -r $(DIRNAMEDATE) distfiles textfiles;
+
+dist:
+	@echo Generating Unix distribution...
+	@$(RM) -r $(DIRNAME) $(ZIPFILE) $(TARFILE).gz
+	@mkdir $(DIRNAME)
+	@tar cvfh  - $(DISTFILES) 2>/dev/null | (cd $(DIRNAME); tar xvf - >/dev/null)
+	@(for i in $(DISTFILES); do			\
+		echo $$i;				\
+	done) | sed "s;.*;$(DIRNAME)/&;" >distfiles
+	tar cvfh  $(TARFILE) `cat distfiles` >/dev/null
+	gzip -9 $(TARFILE) >/dev/null
+	@awk '$(TEXTSUFFIXES) {print}' < distfiles >textfiles
+	@lineend -d `cat textfiles`
+	@echo Generating Windows distribution...
+	zip -9 $(ZIPFILE) `cat distfiles` >/dev/null
+	@$(RM) -r $(DIRNAME) distfiles textfiles;
+
+DIRNAMEMAC=$(DIRNAME)-mac
+
+macdist:
+	@echo Generating Mac distribution...
+	@$(RM) -rf $(DIRNAMEMAC) $(ZIPFILE) $(TARFILE).gz
+	@mkdir $(DIRNAMEMAC)
+	@tar cvfh  - $(DISTFILES) 2>/dev/null | (cd $(DIRNAMEMAC); tar xvf - >/dev/null)
+	@(for i in $(DISTFILES); do			\
+		echo $$i;				\
+	done) | sed "s;.*;$(DIRNAMEMAC)/&;" >distfiles
+	@awk '$(TEXTSUFFIXES) {print}' < distfiles >textfiles
+	@lineend -m `cat textfiles`
+	@$(RM) -r distfiles textfiles;
+	@echo "Mac distribution directory $(DIRNAMEMAC) prepared for packing..."
+
+# We don't bother with dependencies in the clients, sample, and wrapper files since these
+# don't really change.
+
+depend:
+	-cd pdflib && $(MAKE) depend
+	-cd util && $(MAKE) depend

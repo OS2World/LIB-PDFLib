@@ -1,0 +1,79 @@
+# Makefile for PDFlib, C++ language binding
+
+VERSION		= @VERSION@
+LIBPDF		= lib@PDFLIBNAME@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA 	= @INSTALL_DATA@
+srcdir		= @srcdir@
+top_builddir	= ../../
+VPATH		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CXX		= @CXX@
+RM      	= @RM@
+LIBTOOL		= ../../libtool
+
+PDFLIBLINK	= @PDFLIBLINK@ @STDCPP@
+
+CXXFLAGS	= -I../../pdflib @DEFINES@ $(CPPFLAGS)
+
+.SUFFIXES: .cpp .$(OBJ) .lo
+
+.cpp.lo:
+	@$(LIBTOOL) --mode=compile $(CXX) -c $(CXXFLAGS) $<
+
+.cpp.$(OBJ):
+	@$(LIBTOOL) --mode=compile $(CXX) -c $(CXXFLAGS) $<
+
+# ----------------------------------
+
+SRC	= \
+	$(srcdir)/pdflib.cpp	\
+	$(srcdir)/hello.cpp	\
+	$(srcdir)/image.cpp	\
+	$(srcdir)/pdfclock.cpp
+
+OBJS	= \
+	$(srcdir)/pdflib.lo	\
+	$(srcdir)/hello.lo	\
+	$(srcdir)/image.lo	\
+	$(srcdir)/pdfclock.lo
+
+all:	hello$(EXE) image$(EXE) pdfclock$(EXE)
+
+test: hello$(EXE) image$(EXE) pdfclock$(EXE)
+	-$(LIBTOOL) --mode=execute -dlopen ../../pdflib/$(LIBPDF).la ./hello
+	-$(LIBTOOL) --mode=execute -dlopen ../../pdflib/$(LIBPDF).la ./image
+	-$(LIBTOOL) --mode=execute -dlopen ../../pdflib/$(LIBPDF).la ./pdfclock
+
+.PHONY: clean
+
+pdflib.$(OBJ): pdflib.cpp
+
+hello$(EXE): hello.lo pdflib.lo ../../pdflib/$(LIBPDF).la
+	@$(LIBTOOL) --mode=link $(CXX) -o $@ hello.lo pdflib.lo $(PDFLIBLINK)
+
+image$(EXE): image.lo pdflib.lo ../../pdflib/$(LIBPDF).la
+	@$(LIBTOOL) --mode=link $(CXX) -o $@ image.lo pdflib.lo $(PDFLIBLINK)
+
+pdfclock$(EXE): pdfclock.lo pdflib.lo ../../pdflib/$(LIBPDF).la
+	@$(LIBTOOL) --mode=link $(CXX) -o $@ pdfclock.lo pdflib.lo $(PDFLIBLINK)
+
+install: 
+
+uninstall:
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la hello$(EXE) image$(EXE) pdfclock$(EXE) .libs hello_cpp.pdf image_cpp.pdf pdfclock_cpp.pdf
+
+depend:
+	cp Makefile.in Makefile.in.bak
+	sed '/^# Automatically generated dependencies/q' Makefile.in.bak >Makefile.in
+	$(CXX) $(CXXFLAGS) -MM $(SRC) | sed 's/\.o:/.lo:/g' >>Makefile.in
+
+# Automatically generated dependencies
+pdflib.lo: ./pdflib.cpp pdflib.hpp ../../pdflib/pdflib.h
+hello.lo: ./hello.cpp pdflib.hpp ../../pdflib/pdflib.h
+image.lo: ./image.cpp pdflib.hpp ../../pdflib/pdflib.h
+pdfclock.lo: ./pdfclock.cpp pdflib.hpp ../../pdflib/pdflib.h

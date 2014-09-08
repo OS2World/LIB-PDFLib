@@ -1,0 +1,75 @@
+# Makefile for PDFlib's Python binding
+
+VERSION		= @VERSION@
+PDFLIB_CURRENT	= @PDFLIB_CURRENT@
+PDFLIB_REVISION	= @PDFLIB_REVISION@
+PDFLIB_AGE	= @PDFLIB_AGE@
+LIBPDF		= lib@PDFLIBNAME@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA 	= @INSTALL_DATA@
+srcdir		= @srcdir@
+top_builddir	= ../../
+VPATH		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CC		= @CC@
+RM      	= @RM@
+LIBTOOL		= ../../libtool
+
+PDFLIBLINK	= @PDFLIBLINK@
+
+prefix 		= @prefix@
+exec_prefix 	= @exec_prefix@
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+.c.$(OBJ):
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+LANG_LIBDIR 	= @PYTHONLIBDIR@
+
+SWIG		= swig1.2 -I../../pdflib -python -stat
+SWIG_LIB	= pdflib_py.la
+SWIG_OBJ	= pdflib_py.lo
+
+DEFINES 	= -I../../pdflib @PYINCLUDE@ @DEFINES@
+
+all:	$(SWIG_LIB)
+
+.PHONY: clean
+
+# The swig-generated wrapper file
+swig: ../../pdflib/pdflib.i ../../pdflib/pdflib.h
+	$(SWIG) $(SWIGFLAGS) -o $@.XXX ../../pdflib/pdflib.i
+	@echo "Wrapper templates generated!"
+
+# The actual shared library for the language support
+$(SWIG_LIB): $(SWIG_OBJ) ../../pdflib/$(LIBPDF).la ../../pdflib/pdflib.h
+	$(RM) $(SWIG_LIB)
+	@$(LIBTOOL) --mode=link 		\
+	    $(CC) -o $@ $(SWIG_OBJ)		\
+	    -rpath $(LANG_LIBDIR)		\
+	    -no-undefined			\
+	    -module				\
+	    -version-info $(PDFLIB_CURRENT):$(PDFLIB_REVISION):$(PDFLIB_AGE) \
+	    $(PDFLIBLINK)
+
+test: all
+	cp .libs/pdflib_py.s* .
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) python hello.py
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) python image.py
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) python pdfclock.py
+
+install: $(SWIG_LIB)
+	$(LIBTOOL) --mode=install \
+		$(INSTALL_DATA) $(SWIG_LIB) $(LANG_LIBDIR)
+
+uninstall:
+	$(LIBTOOL) --mode=uninstall $(RM) $(LANG_LIBDIR)/$(SWIG_LIB)
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la .libs hello_py.pdf image_py.pdf pdfclock_py.pdf pdflib_py.s*

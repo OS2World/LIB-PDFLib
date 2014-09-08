@@ -1,0 +1,89 @@
+# Makefile for PDFlib's Tcl binding
+
+VERSION		= @VERSION@
+LIBPDF		= lib@PDFLIBNAME@
+PDFLIB_CURRENT	= @PDFLIB_CURRENT@
+PDFLIB_REVISION	= @PDFLIB_REVISION@
+PDFLIB_AGE	= @PDFLIB_AGE@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA 	= @INSTALL_DATA@
+srcdir		= @srcdir@
+top_builddir	= ../../
+VPATH		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CC		= @CC@
+RM      	= @RM@
+LIBTOOL		= ../../libtool
+
+PDFLIBLINK	= @PDFLIBLINK@
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+.c.$(OBJ):
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+LANG_LIBDIR 	= @TCLPACKAGEDIR@
+TCLBIN		= @TCLBIN@
+
+SWIG		= swig1.2 -I../../pdflib -tcl -stat
+SWIG_LIB	= pdflib_tcl.la
+SWIG_OBJ	= pdflib_tcl.lo
+
+DEFINES		= -I../../pdflib @TCLINCLUDE@ @DEFINES@
+
+all:	$(SWIG_LIB)
+
+.PHONY: clean
+
+# The swig-generated wrapper file
+swig: ../../pdflib/pdflib.i ../../pdflib/pdflib.h
+	$(SWIG) -o $@.XXX ../../pdflib/pdflib.i
+	@echo "Wrapper templates generated!"
+
+# The actual shared library for the language support
+$(SWIG_LIB): $(SWIG_OBJ) ../../pdflib/$(LIBPDF).la ../../pdflib/pdflib.h
+	$(RM) $(SWIG_LIB)
+	@$(LIBTOOL) --mode=link \
+	    $(CC) -o $@ $(SWIG_OBJ)		\
+	    -rpath $(LANG_LIBDIR)		\
+	    -no-undefined			\
+	    -module				\
+	    -version-info $(PDFLIB_CURRENT):$(PDFLIB_REVISION):$(PDFLIB_AGE) \
+	    $(PDFLIBLINK)
+
+# Let Tcl generate the index file for our package.
+# The following contradicts libtool's transparency goals a little bit,
+# but we do it only here, and it seems to be necessary because
+# Tcl directly opens the shared library file.
+
+pkgIndex.tcl:	$(SWIG_LIB)
+	echo "pkg_mkIndex .libs pdflib_tcl.so" | $(LIBTOOL) --mode=execute	\
+		-dlopen $(SWIG_LIB) $(TCLBIN) && mv .libs/pkgIndex.tcl .
+
+test: all
+	cp .libs/pdflib_tcl.s* .
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) $(TCLBIN) hello.tcl
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) $(TCLBIN) image.tcl
+	-$(LIBTOOL) --mode=execute -dlopen $(SWIG_LIB) $(TCLBIN) pdfclock.tcl
+
+install: $(SWIG_LIB)
+	if test ! -d $(LANG_LIBDIR) ; then 	\
+	    mkdir -p $(LANG_LIBDIR);		\
+	    chmod 755 $(LANG_LIBDIR);		\
+	fi
+	$(LIBTOOL) --mode=install \
+		$(INSTALL_DATA) $(SWIG_LIB) $(LANG_LIBDIR)
+	$(INSTALL_DATA) pkgIndex.tcl $(LANG_LIBDIR)
+
+uninstall:
+	$(LIBTOOL) --mode=uninstall \
+		$(RM) $(LANG_LIBDIR)/$(SWIG_LIB) $(LANG_LIBDIR)/pkgIndex.tcl
+	$(RM) -rf $(LANG_LIBDIR)
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la .libs hello_tcl.pdf image_tcl.pdf pdfclock_tcl.pdf pdflib_tcl.s*

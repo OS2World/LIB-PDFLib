@@ -1,0 +1,72 @@
+#!/bin/sh
+#
+# Return information about the local PDFlib installation
+#
+
+usage()
+{
+	cat <<EOF
+Print information on PDFlib's version, configuration, and use.
+Usage: pdflib-config [options]
+Options:
+	--libdir          # directory where PDFlib library is installed
+	--includedir      # directory where PDFlib header is installed
+	--version         # complete PDFlib version number
+	--minorversion    # PDFlib minor version number
+	--majorversion    # PDFlib major version number
+	--libversion      # PDFlib shared library interface number
+	--libs            # linker options required for linking against PDFlib
+	--cflags          # configuration #defines (not required for PDFlib clients!)
+EOF
+	exit $1
+}
+
+# installation directories
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+# directories for the final library and include files for PDFlib users
+libdir=@libdir@
+includedir=@includedir@
+
+if test $# -eq 0; then
+	usage 1 1>&2
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+    esac
+
+    case $1 in
+    --libdir)
+	echo $libdir
+	;;
+    --includedir)
+	echo $includedir
+	;;
+    --version)
+	echo @VERSION@
+	;;
+    --minorversion)
+	echo @PDFLIB_MINOR@
+	;;
+    --majorversion)
+	echo @PDFLIB_MAJOR@
+	;;
+    --libversion)
+	echo @PDFLIB_CURRENT@.@PDFLIB_REVISION@.@PDFLIB_AGE@
+	;;
+    --cflags)
+	echo @INCLUDES@
+	;;
+    --libs)
+	echo @PDFLIBLINKEXTERN@
+	;;
+    *)
+	usage 1 1>&2
+	;;
+    esac
+    shift
+done

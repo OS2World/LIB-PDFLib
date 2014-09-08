@@ -1,0 +1,92 @@
+# Makefile for PDFlib's Java binding
+
+VERSION 	= @VERSION@
+LIBPDF		= lib@PDFLIBNAME@
+PDFLIB_CURRENT	= @PDFLIB_CURRENT@
+PDFLIB_REVISION	= @PDFLIB_REVISION@
+PDFLIB_AGE	= @PDFLIB_AGE@
+SHELL 		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA	= @INSTALL_DATA@
+srcdir 		= @srcdir@
+top_builddir	= ../../
+VPATH 		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CC		= @CC@
+RM      	= @RM@
+LIBTOOL		= ../../libtool
+prefix 		= @prefix@
+exec_prefix 	= @exec_prefix@
+
+PDFLIBLINK	= @PDFLIBLINK@
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+.c.$(OBJ):
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFINES) $<
+
+LANG_LIBDIR 	= @libdir@
+
+SWIG		= swig1.2 -I../../pdflib -java -stat
+SWIG_LIB	= libpdf_java.la
+SWIG_OBJ	= pdflib_java.lo
+
+DEFINES		 = -I../../pdflib @JAVAINCLUDE@ @DEFINES@ 
+
+all:	$(SWIG_LIB) pdflib.jar
+
+.PHONY: clean
+
+# The swig-generated wrapper template file
+swig: ../../pdflib/pdflib.i ../../pdflib/pdflib.h
+	$(SWIG) -o $@.XXX ../../pdflib/pdflib.i
+	@echo "Wrapper templates generated!"
+
+# The actual shared library for the language support
+$(SWIG_LIB): ../../pdflib/pdflib.h ../../pdflib/$(LIBPDF).la $(SWIG_OBJ)
+	$(RM) $(SWIG_LIB)
+	@$(LIBTOOL) --mode=link 		\
+	    $(CC) -o $@ $(SWIG_OBJ) 		\
+	    -rpath $(LANG_LIBDIR)		\
+	    -no-undefined			\
+	    -module				\
+	    -version-info $(PDFLIB_CURRENT):$(PDFLIB_REVISION):$(PDFLIB_AGE) \
+	    $(PDFLIBLINK)
+
+pdflib.jar: pdflib.java
+	$(RM) com
+	mkdir -p com/pdflib
+	javac pdflib.java && mv pdflib.class com/pdflib
+	jar cvf pdflib.jar com/pdflib/pdflib.class
+	$(RM) com
+
+javadoc:
+	$(RM) javadoc
+	mkdir javadoc
+	-javadoc -notree -author -version -d javadoc -public pdflib.java
+
+test: $(SWIG_LIB) pdflib.jar
+	CLASSPATH=$$CLASSPATH:pdflib.jar:. javac hello.java
+	CLASSPATH=$$CLASSPATH:pdflib.jar:. $(LIBTOOL) --mode=execute \
+	    -dlopen $(SWIG_LIB) java hello
+	CLASSPATH=$$CLASSPATH:pdflib.jar:. javac image.java
+	CLASSPATH=$$CLASSPATH:pdflib.jar:. $(LIBTOOL) --mode=execute \
+	    -dlopen $(SWIG_LIB) java image
+	CLASSPATH=$$CLASSPATH:pdflib.jar:. javac pdfclock.java
+	CLASSPATH=$$CLASSPATH:pdflib.jar:. $(LIBTOOL) --mode=execute \
+	    -dlopen $(SWIG_LIB) java pdfclock
+
+install: $(SWIG_LIB) pdflib.jar
+	$(LIBTOOL) --mode=install $(INSTALL_DATA) $(SWIG_LIB) $(LANG_LIBDIR)
+	@echo Copy pdflib.jar and javadoc to an appropriate directory
+	@echo and include the pdflib.jar file name in your CLASSPATH.
+
+uninstall:
+	$(LIBTOOL) --mode=uninstall $(RM) $(LANG_LIBDIR)/$(SWIG_LIB)
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la *.class com .libs hello_java.pdf image_java.pdf pdfclock_java.pdf pdflib.jar javadoc

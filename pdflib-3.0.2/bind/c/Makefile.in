@@ -1,0 +1,70 @@
+# Makefile for PDFlib C samples, C language binding
+
+VERSION		= @VERSION@
+LIBPDF		= lib@PDFLIBNAME@
+SHELL		= @SHELL@
+INSTALL		= @INSTALL@
+INSTALL_DATA 	= @INSTALL_DATA@
+srcdir		= @srcdir@
+top_builddir	= ../../
+VPATH		= @srcdir@
+EXE		= @EXEEXT@
+OBJ		= @OBJEXT@
+CC		= @CC@
+RM      	= @RM@
+LIBTOOL		= ../../libtool
+
+PDFLIBLINK	= @PDFLIBLINK@
+
+CFLAGS		= -I../../pdflib @DEFINES@ $(CPPFLAGS)
+
+.SUFFIXES: .c .$(OBJ) .lo
+
+.c.lo:
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CFLAGS) $<
+
+.c.$(OBJ):
+	@$(LIBTOOL) --mode=compile $(CC) -c $(CFLAGS) $<
+
+# ------------------------------
+
+SRC	= \
+	$(srcdir)/hello.c		\
+	$(srcdir)/image.c		\
+	$(srcdir)/pdfclock.c
+
+OBJS	= \
+	$(srcdir)/hello.lo		\
+	$(srcdir)/image.lo		\
+	$(srcdir)/pdfclock.lo
+
+all:	hello$(EXE) image$(EXE) pdfclock$(EXE)
+
+test: hello$(EXE) image$(EXE) pdfclock$(EXE)
+	-$(LIBTOOL) --mode=execute -dlopen ../../pdflib/$(LIBPDF).la ./hello
+	-$(LIBTOOL) --mode=execute -dlopen ../../pdflib/$(LIBPDF).la ./image
+	-$(LIBTOOL) --mode=execute -dlopen ../../pdflib/$(LIBPDF).la ./pdfclock
+
+.PHONY: clean
+
+hello$(EXE): hello.lo ../../pdflib/$(LIBPDF).la
+	@$(LIBTOOL) --mode=link $(CC) -o $@ hello.lo $(PDFLIBLINK)
+
+image$(EXE): image.lo ../../pdflib/$(LIBPDF).la
+	@$(LIBTOOL) --mode=link $(CC) -o $@ image.lo $(PDFLIBLINK)
+
+pdfclock$(EXE): pdfclock.lo ../../pdflib/$(LIBPDF).la
+	@$(LIBTOOL) --mode=link $(CC) -o $@ pdfclock.lo $(PDFLIBLINK)
+
+clean:
+	-$(RM) *.$(OBJ) *.lo *.la hello$(EXE) image$(EXE) pdfclock$(EXE) .libs hello_c.pdf hello_c.pdf pdfclock_c.pdf
+
+depend:
+	cp Makefile.in Makefile.in.bak
+	sed '/^# Automatically generated dependencies/q' Makefile.in.bak >Makefile.in
+	$(CC) $(CFLAGS) -MM $(SRC) | sed 's/\.o:/.lo:/g' >>Makefile.in
+
+# Automatically generated dependencies
+hello.lo: ./hello.c ../../pdflib/pdflib.h
+image.lo: ./image.c ../../pdflib/pdflib.h
+pdfclock.lo: ./pdfclock.c ../../pdflib/pdflib.h
